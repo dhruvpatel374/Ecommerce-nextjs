@@ -17,13 +17,12 @@ type Product = {
   __v: number;
 };
 
-const Home = () => {
+const ManageProduct = () => {
   const [data, setData] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("");
   const [sortOrder, setSortOrder] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [buttonText, setButtonText] = useState("Add to Cart");
+  const [buttonText, setButtonText] = useState("Edit Product");
 
   const fetchProducts = async () => {
     try {
@@ -41,22 +40,14 @@ const Home = () => {
     fetchProducts();
   }, []);
 
+  // Get unique categories for dropdown
   const categories = Array.from(
     new Set(data.map((product) => product.category))
   );
 
+  // Filter and sort products
   const filteredAndSortedProducts = [...data]
     .filter((product) => {
-      // Apply search filter
-      const query = searchQuery.toLowerCase();
-      if (
-        query &&
-        !product.name.toLowerCase().includes(query) &&
-        !product.description.toLowerCase().includes(query)
-      ) {
-        return false;
-      }
-
       if (categoryFilter && product.category !== categoryFilter) {
         return false;
       }
@@ -78,7 +69,6 @@ const Home = () => {
   const clearFilters = () => {
     setCategoryFilter("");
     setSortOrder("");
-    setSearchQuery("");
   };
 
   if (loading) {
@@ -98,37 +88,11 @@ const Home = () => {
 
   return (
     <>
-      <h1 className="text-4xl font-bold mb-4 text-center m-5 text-white">
-        Products
-      </h1>
+      <h1 className="text-4xl font-bold mb-4 text-center m-5">Products</h1>
 
-      {/* Filters and Search */}
+      {/* Filters */}
       <div className="md:mx-24 mx-5 mb-6 bg-base-200 p-4 rounded-md shadow-lg">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Search Input */}
-          <div>
-            <label className="block text-sm font-semibold mb-2 text-white">
-              Search Products
-            </label>
-            <div className="relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by name or description..."
-                className="select select-bordered w-full bg-gray-800 text-white border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          </div>
-
           {/* Category Dropdown */}
           <div>
             <label className="block text-sm font-semibold mb-2 text-white">
@@ -148,7 +112,6 @@ const Home = () => {
             </select>
           </div>
 
-          {/* Price Sort Dropdown */}
           <div>
             <label className="block text-sm font-semibold mb-2 text-white">
               Sort by Price
@@ -163,23 +126,22 @@ const Home = () => {
               <option value="low-to-high">Price: Low to High</option>
             </select>
           </div>
-        </div>
-        {/* Clear Filters Button */}
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={clearFilters}
-            className="btn text-black bg-white border-none px-6 py-2"
-          >
-            Clear Filters
-          </button>
+
+          <div className="flex items-end">
+            <button
+              onClick={clearFilters}
+              className="btn text-black bg-white border-none w-full"
+            >
+              Clear Filters
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Product Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:mx-24 mx-5">
         {filteredAndSortedProducts.length === 0 ? (
           <p className="text-center text-white col-span-full">
-            No products match the selected filters or search
+            No products match the selected category
           </p>
         ) : (
           filteredAndSortedProducts.map((product: Product) => (
@@ -187,6 +149,7 @@ const Home = () => {
               key={product._id}
               product={product}
               buttonText={buttonText}
+              deleteButton={true}
             />
           ))
         )}
@@ -195,4 +158,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default ManageProduct;

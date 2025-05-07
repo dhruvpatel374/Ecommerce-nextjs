@@ -17,7 +17,7 @@ type Product = {
   __v: number;
 };
 
-const Home = () => {
+const Products = () => {
   const [data, setData] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("");
@@ -47,7 +47,6 @@ const Home = () => {
 
   const filteredAndSortedProducts = [...data]
     .filter((product) => {
-      // Apply search filter
       const query = searchQuery.toLowerCase();
       if (
         query &&
@@ -195,4 +194,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Products;
